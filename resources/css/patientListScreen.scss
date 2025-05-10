@@ -1,0 +1,54 @@
+.show-patients{
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 3fr 2fr;
+  gap: 0.5rem;
+}
+
+.patients-unserved,.patients-served{
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.patients-unserved>div{
+  display: grid;
+  grid-template-columns: 5% 75% 20%;
+
+  padding-left: 1rem;
+  border-bottom: 0.6rem solid var(--cor-branco);
+  border-radius: 15px;
+
+  font-size: 1.8rem;
+}
+.patients-unserved>div:last-child{
+  // border-bottom: 0;
+  border-radius: 0;
+}
+
+#patients-tittle{
+  font-size: 1.5rem;
+  background-color: var(--cinza-dois);
+  border-radius: 0px;
+}
+
+.showed-patients>span:nth-child(3){
+  text-transform: uppercase;
+  text-align: center;
+}
+.showed-patients>span:nth-child(2){
+  padding-left: 1rem;
+  border-left: 5px solid var(--cinza-um);
+  border-right: 5px solid var(--cinza-um);
+  text-transform: capitalize;
+}
+
+.patients-served>div{
+  padding-left: 1rem;
+  border-bottom: 0.6rem solid var(--cor-branco);
+  border-radius: 15px;
+  font-size: 1.8rem;
+}
+
+.patients-served>div:last-child{
+  border-bottom: 0;
+}

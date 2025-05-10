@@ -1,0 +1,24 @@
+footer{
+  position: sticky;
+  bottom: 0px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+
+  // height: 500px;
+  // height: 100%;
+
+  padding: 0.3rem;
+
+  background-color: var(--cor-secundaria);
+  color: var(--cinza-dois);
+}
+
+.footer-text{
+  display: inline-block;
+  margin: 0;
+  font-size: 0.6rem;
+  color: var(--cinza-dois);
+}

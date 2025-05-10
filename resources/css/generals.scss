@@ -1,0 +1,62 @@
+.caixa{
+  
+  border: 0.6rem solid var(--cor-branco);
+  border-radius: 15px;
+
+  background-color: var(--cinza-dois);
+}
+
+.caixa-tittle{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  
+  width: 100%;
+  padding: 0.6rem 1rem;
+
+  border-block-end: inherit;
+
+  background-color: var(--cinza-tres);
+
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.text-center{
+  display: inline-block;
+  text-align: center;
+}
+
+.inputs{
+  width: 100%;
+
+  border-radius: 8px;
+  border: 0;
+
+  background-color: var(--cor-secundaria);
+  color: var(--cinza-um);
+}
+.inputs>option{
+  color: var(--cinza-um);
+  font-family: inherit;
+}
+
+.buttons{
+  padding: 0.2rem 1.3rem;
+  
+  background-color: var(--cor-primaria);
+  border: 3px solid var(--cor-secundaria);
+  border-radius: 8px;
+  
+  font-size: 0,8rem;
+}
+
+.icons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: .5rem;
+  
+  text-decoration: none;
+}

@@ -1,0 +1,42 @@
+@import "./reset.scss";
+@import "bootstrap/scss/bootstrap";
+
+//Fonts
+@import url('https://fonts.googleapis.com/css2?family=Orelega+One&family=Overlock+SC&display=swap');
+//Icons
+
+:root{
+  --cor-primaria : #85BFCB;
+  --cor-secundaria: #102F43;
+  --cor-terciaria: #CEF7FB;
+
+  --cor-branco: #e0e0e0;
+  --cinza-um: #d9d9d9;
+  --cinza-dois: #d9d9d9aa;
+  --cinza-tres: #d9d9d9bb;
+  --cinza-quatro: #424242cc;
+  --cinza-cinco: #424242;
+
+  --font-um: "Orelega One", serif;
+  --font-dois: "Overlock SC", sans-serif;;
+  
+  font-size: 16px;
+}
+
+*{
+  font-family: var(--font-um); 
+  color: var(--cor-secundaria);
+}
+
+@import 'header.scss';
+@import 'body.scss';
+@import 'footer.scss';
+
+@import 'generals.scss';
+@import 'login.scss';
+@import 'dashboard.scss';
+@import 'patientListScreen.scss';
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */

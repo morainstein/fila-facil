@@ -1,0 +1,19 @@
+body{
+  display: flex;
+  flex-direction: column;
+
+  height: 100vh;
+}
+main{
+  height: 100%;
+  padding-top: 2.5rem;
+  display: flex;
+  
+  --background-gradient: linear-gradient(180deg,rgba(45, 148, 189, 0.5) 0%, rgba(16, 47, 67, 1  ) 100%);
+  background-image: var(--background-gradient),url('../assets/background.png');
+  background-repeat: no-repeat;
+  background-size: 100% 110%;
+  background-blend-mode: multiply;
+
+}
+
