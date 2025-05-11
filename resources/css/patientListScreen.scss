@@ -1,11 +1,24 @@
 .show-patients{
   display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: 3fr 2fr;
+  grid-template-columns: 80% 20%;
+  grid-template-rows: 50% 50%;
   gap: 0.5rem;
-}
+  justify-content: center;
+  justify-items: start;
+  padding: 5px;
 
-.patients-unserved,.patients-served{
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.patients-unserved{
+  grid-column: 1 / span 2;
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
+
+}
+.patients-served{
+  width: 100%;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -51,4 +64,14 @@
 
 .patients-served>div:last-child{
   border-bottom: 0;
+}
+
+.qrcode{
+  justify-self: center;
+  box-sizing: border-box;
+}
+
+.qrcode>img{
+  height: 100%;
+  width: 100%;
 }

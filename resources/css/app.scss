@@ -6,8 +6,8 @@
 //Icons
 
 :root{
-  --cor-primaria : #85BFCB;
-  --cor-secundaria: #102F43;
+  --cor-primaria : rgb(133, 191, 203);
+  --cor-secundaria: rgb(16, 47, 67);
   --cor-terciaria: #CEF7FB;
 
   --cor-branco: #e0e0e0;
@@ -26,6 +26,7 @@
 *{
   font-family: var(--font-um); 
   color: var(--cor-secundaria);
+  box-sizing: border-box;
 }
 
 @import 'header.scss';

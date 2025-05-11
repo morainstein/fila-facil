@@ -28,6 +28,10 @@
     @endforeach
   </div>
 
+  <div class="qrcode">
+    <img src="{{ Vite::asset('resources/qrcodes/teste.png') }}">
+  </div>
+
 </section>
 
 </x-main>

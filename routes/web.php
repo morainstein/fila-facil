@@ -49,6 +49,9 @@ Route::middleware(Authenticate::class)->group(function(){
 
         Route::get('/clinica/listPatients','patientListScreen')
             ->name('clinica.patientListScreen');
+
+        Route::get('/qrcode','generateQrcode')
+            ->withoutMiddleware(Authenticate::class);
     });
 });
 

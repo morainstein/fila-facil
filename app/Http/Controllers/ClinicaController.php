@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QrCodeFactory;
 use App\Models\Clinica;
 use App\Models\Paciente;
 use App\Models\Sessao;
@@ -11,6 +12,9 @@ use Illuminate\Support\Facades\Hash;
 
 class ClinicaController extends Controller
 {
+
+    public function __construct()
+    {}
 
     public function formLogin()
     {
@@ -138,4 +142,14 @@ class ClinicaController extends Controller
 
         return to_route('clinica.dashboard');
     }
+
+    public function generateQrcode(QrCodeFactory $qrCode)
+    {
+        $result = $qrCode->generate("ue");
+        $result->saveToFile(__DIR__."/../../../resources/qrcodes/teste.png");
+
+        header("Content-Type:". $result->getMimeType());
+        echo $result->getString();
+    }
+
 }
