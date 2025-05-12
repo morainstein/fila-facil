@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Clinica;
 use App\Models\Paciente;
 use App\Models\Sessao;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class PacienteController extends Controller
@@ -26,39 +27,57 @@ class PacienteController extends Controller
         $sessaoId = isset($sessao->id) ? $sessao->id : null; 
             
         session(['sessaoId'=>$sessaoId],null);
-        
-        if($sessaoId !== null){
 
-            return view('paciente.form')->with('clinica',$clinica);
+        if($sessaoId === null){
+            return 'sessão ainda não abriu :(';
         }
-
-        return 'sessão ainda não abriu :(';
+        
+        return view('paciente.formPatient')
+            ->with(['clinicaId'=>$clinica->id]);
 
     }
 
     public function store(Request $request)
     {
-        $insert = [
-            'nome' => $request->nome,
-            'sessao_id' => session()->get('sessaoId'),
-        ];
-        $paciente = Paciente::insert($insert);
+        $clinicaId = $request->clinicaId;
 
-        $clinicaId = session()->get('clinicaId');
+        $currentDate = session()->get('currentDate');
 
-        if(isset($clinicaId)){
-            return to_route('clinica.dashboard');
+        $todaysSession = Sessao::
+            whereRaw("clinica_id = '$clinicaId' and data_sessao >= '$currentDate'")
+            ->first();
+
+        if(is_null($todaysSession)){
+        /* INSERIR MSG DE SESSÃO FECHADA */
+            return redirect()->back();
         }
 
-        return to_route('paciente.show',['paciente' => $paciente]);
+        $insert = [
+            'nome' => $request->nome,
+            'sessao_id' => $todaysSession->id,
+        ];
+
+        $paciente = new Paciente($insert);
+        $paciente->save();
+
+        session([
+            ["pacienteId"=>$paciente->id],
+            ["clinicaId"=>$clinicaId],
+        ]);
+        return to_route('paciente.show',['paciente' => $paciente->id]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Paciente $request)
+    public function show(Request $request)
     {
-        return 'PÁGINA PRA MOSTRAR A FILA';
+        $pacienteId = session()->get('pacienteId');
+        $clinicaId = session()->get('clinicaId');
+
+        [$servedPatients, $unservedPatients] = ClinicaController::returnPatientsList($request);
+
+        return view('paciente.waitScreen')->with([
+            'servedPatients' => $servedPatients,
+            'unservedPatients' => $unservedPatients
+        ]);
     }
 
     /**

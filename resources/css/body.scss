@@ -18,3 +18,14 @@ main{
   overflow: hidden;
 }
 
+  
+@media screen and (max-width:768px) {
+
+  main{
+    background-image: var(--background-gradient);
+    background-size: contain;
+    background-position: center;
+  }
+  
+}
+

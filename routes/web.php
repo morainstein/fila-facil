@@ -42,7 +42,10 @@ Route::middleware(Authenticate::class)->group(function(){
             ->name('clinica.dashboard');
 
         Route::get('/clinica/openSession','openSession')
-        ->name('clinica.openSession');
+            ->name('clinica.openSession');
+
+        Route::post('/clinica/storePatient','storePatient')
+            ->name('clinica.storePatient');
 
         Route::get('/clinica/nextPaciente','nextPaciente')
             ->name('clinica.nextPaciente');
@@ -65,10 +68,10 @@ Route::controller(PacienteController::class)->group( function (){
         ->name('paciente.create');
     // Rota para Paciente -> Cadastra o paciente
     Route::post('/paciente/store','store')
-        ->whereNumber('clinica')
         ->name('paciente.store');
     // Rota para Paciente -> Mostra a fila
     Route::get('/paciente/show','show')
+        ->whereNumber('paciente')
         ->name('paciente.show');
 });
 

@@ -6,6 +6,7 @@ use App\Helpers\QrCodeFactory;
 use App\Models\Clinica;
 use App\Models\Paciente;
 use App\Models\Sessao;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +31,7 @@ class ClinicaController extends Controller
             $clinicaId = Auth::user()->id;
             session(['clinicaId'=>$clinicaId]);
             return to_route('clinica.dashboard');
+                // ->with(['clinicaId' => $clinicaId]);
         }else{
             return redirect()->back();
         }
@@ -43,22 +45,30 @@ class ClinicaController extends Controller
 
     public function create()
     {
-        return view('clinica.form');
+        return view('clinica.create');
     }
 
     public function store(Request $request)
     {
-        $clinica = new Clinica();
-        $clinica->nome_empresa = $request->nome;
-        $clinica->email = $request->email;
-        $clinica->cnpj = $request->cnpj;
-        $clinica->password = Hash::make($request->senha);
-        $clinica->save();
+        try{
 
-        return to_route('clinica.create');
+            $clinica = new Clinica();
+            $clinica->nome_empresa = $request->nome;
+            $clinica->email = $request->email;
+            $clinica->cnpj = $request->cnpj;
+            $clinica->password = Hash::make($request->senha);
+            $clinica->save();
+        }catch(UniqueConstraintViolationException $e){
+            
+            /** INSERIR MENSSAGEM DE ERRO NA VIEW */
+            return to_route('clinica.create');
+                
+        }
+
+        return to_route('clinica.login');
     }
 
-    private function returnPatientsList(Request $request) : array
+    static public function returnPatientsList(Request $request) : array
     {
         $clinicaId = $request->session()->get('clinicaId');
 
@@ -70,29 +80,29 @@ class ClinicaController extends Controller
             ->orderBy('pacientes.id','asc')
             ->get();
 
-        $servedPacientes = [];
-        $unservedPacientes = [];
+        $servedPatients = [];
+        $unservedPatients = [];
 
         foreach($pacientes as $paciente){
             if($paciente->atendido == 1){
-                $servedPacientes[] = $paciente;
+                $servedPatients[] = $paciente;
             }elseif($paciente->atendido == 0){
-                $unservedPacientes[] = $paciente;
+                $unservedPatients[] = $paciente;
             }
         }
 
-        return [$servedPacientes, $unservedPacientes];
+        return [$servedPatients, $unservedPatients];
     }
 
     public function dashboard(Request $request)
     {
-        [$servedPacientes, $unservedPacientes] = $this->returnPatientsList($request);
+        [$servedPatients, $unservedPatients] = $this->returnPatientsList($request);
         $sessionMsg = $request->session()->pull('sessionMsg');
 
         return view('clinica.dashboard')->with([
             'sessionMsg' => $sessionMsg,
-            'servedPacientes' => $servedPacientes,
-            'unservedPacientes' => $unservedPacientes
+            'servedPatients' => $servedPatients,
+            'unservedPatients' => $unservedPatients
         ]);
     }
 
@@ -116,16 +126,41 @@ class ClinicaController extends Controller
         return to_route('clinica.dashboard')->with('sessionMsg',$sessionMsg);        
     }
 
+    public function storePatient(Request $request)
+    {
+        $clinicaId = session()->get('clinicaId');
+
+        $currentDate = session()->get('currentDate');
+
+        $todaysSession = Sessao::
+            whereRaw("clinica_id = '$clinicaId' and data_sessao >= '$currentDate'")
+            ->first();
+
+        if(is_null($todaysSession)){
+        /* INSERIR MSG DE SESSÃO FECHADA */
+            return redirect()->back();
+        }
+
+        $insert = [
+            'nome' => $request->nome,
+            'sessao_id' => $todaysSession->id,
+        ];
+
+        $paciente = new Paciente($insert);
+        $paciente->save();
+
+        return to_route('clinica.dashboard');   
+    }
+
     public function patientListScreen(Request $request)
     {
-        [$servedPacientes, $unservedPacientes] = $this->returnPatientsList($request);
+        [$servedPatients, $unservedPatients] = $this->returnPatientsList($request);
 
         return view('clinica.patientListScreen')
             ->with([
-                'servedPacientes' => $servedPacientes,
-                'unservedPacientes' => $unservedPacientes    
+                'servedPatients' => $servedPatients,
+                'unservedPatients' => $unservedPatients    
             ]);
-
     }
 
     public function nextPaciente()

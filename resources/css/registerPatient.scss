@@ -1,0 +1,43 @@
+.formPatient{
+  width: 50%;
+  margin: auto;
+}
+
+
+.register-patient{
+  grid-column: 2;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem 2rem;
+}
+
+.register-patient>label{
+  font-family: var(--font-dois);
+  margin-bottom: 10px;
+}
+
+.register-patient>.buttons{
+  margin-top: 10px;
+}
+
+.register-patient img{
+  width: 7rem;
+  margin: auto;
+}
+  
+@media screen and (max-width:768px) {
+  .formPatient{
+    height: 100%;
+    width: 90%;
+  }
+  .register-patient{
+    height: 95%;
+  }
+  .register-patient img{
+    width: 5rem;
+    margin-bottom: 1rem;
+  }
+ 
+}

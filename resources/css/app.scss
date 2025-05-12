@@ -34,9 +34,11 @@
 @import 'footer.scss';
 
 @import 'generals.scss';
-@import 'login.scss';
+@import 'form-and-login.scss';
 @import 'dashboard.scss';
 @import 'patientListScreen.scss';
+@import 'registerPatient.scss';
+@import 'waitScreen.scss';
 
 /* @tailwind base;
 @tailwind components;
