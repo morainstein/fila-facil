@@ -28,11 +28,12 @@ class ClinicaController extends Controller
     public function makeLogin(Request $request)
     {              
         if(Auth::attempt(['email'=>$request->email,'password'=>$request->senha])){
-            $clinicaId = Auth::user()->id;
-            session(['clinicaId'=>$clinicaId]);
+            $clinicId = Auth::user()->id;
+            $clinicName = Auth::user()->nome_empresa;
+            session(['clinicId'=>$clinicId,'clinicName'=>$clinicName]);
             return to_route('clinica.dashboard');
-                // ->with(['clinicaId' => $clinicaId]);
         }else{
+            // IMPLEMENTAR MENSAGEM DE LOGIN ERRADO
             return redirect()->back();
         }
     }
@@ -51,7 +52,9 @@ class ClinicaController extends Controller
     public function store(Request $request)
     {
         try{
-
+            $qrCodeFactory = new QrCodeFactory();
+            $qrCodeName = $qrCodeFactory->generate($request->nome);
+            
             $clinica = new Clinica();
             $clinica->nome_empresa = $request->nome;
             $clinica->email = $request->email;
@@ -68,14 +71,25 @@ class ClinicaController extends Controller
         return to_route('clinica.login');
     }
 
+    // static public function generateQrcode(QrCodeFactory $qrCode)
+    // {
+
+    //     $result = $qrCode->generate("ue");
+        
+    //     // $result->saveToFile(__DIR__."/../../../resources/qrcodes/teste.png");
+
+    //     // header("Content-Type:". $result->getMimeType());
+    //     // echo $result->getString();
+    // }
+
     static public function returnPatientsList(Request $request) : array
     {
-        $clinicaId = $request->session()->get('clinicaId');
+        $clinicId = $request->session()->get('clinicId');
 
         $currentDate = session()->get('currentDate');
 
         $pacientes = Sessao::join('pacientes','sessoes.id','=','pacientes.sessao_id')
-            ->where('clinica_id',$clinicaId)
+            ->where('clinica_id',$clinicId)
             ->where('data_sessao','>=',$currentDate)
             ->orderBy('pacientes.id','asc')
             ->get();
@@ -94,6 +108,17 @@ class ClinicaController extends Controller
         return [$servedPatients, $unservedPatients];
     }
 
+    public function patientListScreen(Request $request)
+    {
+        [$servedPatients, $unservedPatients] = $this->returnPatientsList($request);
+
+        return view('clinica.patientListScreen')
+            ->with([
+                'servedPatients' => $servedPatients,
+                'unservedPatients' => $unservedPatients    
+            ]);
+    }
+
     public function dashboard(Request $request)
     {
         [$servedPatients, $unservedPatients] = $this->returnPatientsList($request);
@@ -108,16 +133,16 @@ class ClinicaController extends Controller
 
     public function openSession()
     {
-        $clinicaId = session()->get('clinicaId');
+        $clinicId = session()->get('clinicId');
         $currentDate = session()->get('currentDate');
 
         $sql = 'data_sessao > ? AND clinica_id = ?';
-        $isThereSession = Sessao::whereRaw($sql,[$currentDate,$clinicaId])
+        $isThereSession = Sessao::whereRaw($sql,[$currentDate,$clinicId])
             ->exists();
 
         $sessionMsg = 'A Sessão de hoje já existe';
         if(!$isThereSession){
-            $sessao = new Sessao(['clinica_id'=> $clinicaId]);
+            $sessao = new Sessao(['clinica_id'=> $clinicId]);
             $sessao->save();
             session(['sessaoId' => $sessao->id],null);
             $sessionMsg = 'Sessão criada';
@@ -128,12 +153,12 @@ class ClinicaController extends Controller
 
     public function storePatient(Request $request)
     {
-        $clinicaId = session()->get('clinicaId');
+        $clinicId = session()->get('clinicId');
 
         $currentDate = session()->get('currentDate');
 
         $todaysSession = Sessao::
-            whereRaw("clinica_id = '$clinicaId' and data_sessao >= '$currentDate'")
+            whereRaw("clinica_id = '$clinicId' and data_sessao >= '$currentDate'")
             ->first();
 
         if(is_null($todaysSession)){
@@ -152,17 +177,6 @@ class ClinicaController extends Controller
         return to_route('clinica.dashboard');   
     }
 
-    public function patientListScreen(Request $request)
-    {
-        [$servedPatients, $unservedPatients] = $this->returnPatientsList($request);
-
-        return view('clinica.patientListScreen')
-            ->with([
-                'servedPatients' => $servedPatients,
-                'unservedPatients' => $unservedPatients    
-            ]);
-    }
-
     public function nextPaciente()
     {
         $sessaoId = session()->get('sessaoId');
@@ -176,15 +190,6 @@ class ClinicaController extends Controller
         $paciente->save();
 
         return to_route('clinica.dashboard');
-    }
-
-    public function generateQrcode(QrCodeFactory $qrCode)
-    {
-        $result = $qrCode->generate("ue");
-        $result->saveToFile(__DIR__."/../../../resources/qrcodes/teste.png");
-
-        header("Content-Type:". $result->getMimeType());
-        echo $result->getString();
     }
 
 }

@@ -15,8 +15,18 @@ class PacienteController extends Controller
         //
     }
 
-    public function create(Request $request, Clinica $clinica)
+    public function create(Request $request, string $clinicName)
     {
+        $clinicName = str_replace('_',' ',$clinicName);
+
+        $clinica = Clinica::query()
+            ->where('nome_empresa','=',$clinicName)
+            ->first('id');
+
+        if(!isset($clinica)){
+            return 'CRIAR VIEW DE EMPRESA NÃO ENCONTRADA';
+        }
+
         $currentDate = session()->get('currentDate');
         
         $sessao = Sessao::query()
@@ -69,9 +79,6 @@ class PacienteController extends Controller
 
     public function show(Request $request)
     {
-        $pacienteId = session()->get('pacienteId');
-        $clinicaId = session()->get('clinicaId');
-
         [$servedPatients, $unservedPatients] = ClinicaController::returnPatientsList($request);
 
         return view('paciente.waitScreen')->with([

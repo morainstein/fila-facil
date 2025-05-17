@@ -31,7 +31,7 @@
   </div>
 
   @isset($sessionMsg)
-    <div class="alert alert-danger">
+    <div class="flash-msg session-msg">
       {{$sessionMsg}}
     </div>
   @endisset
@@ -48,12 +48,6 @@
     <x-registerPatient></x-registerPatient>
         
   </div>
-
-  {{-- <div class="d-flex gap-3">
-    <a href="#">
-      <button class="btn btn-success">Gerar qr code </button>
-    </a>
-  </div> --}}
 
 </section>
 

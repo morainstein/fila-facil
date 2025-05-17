@@ -7,6 +7,7 @@ use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\Encoding\EncodingInterface;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Label\Margin\Margin;
 use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\RoundBlockSizeMode;
@@ -20,40 +21,40 @@ class QrCodeFactory
   private ColorInterface $foregroundColor;
   private ColorInterface $backgroundColor;
 
-  function __construct($data = "")
+  function __construct()
   {
-    $this->setData($data);
     $this->foregroundColor = new Color(255, 255, 255);
     $this->backgroundColor = new Color(16, 47, 67);
   }
 
-  public function setData($data) : void
-  {
-    $this->data = $data;
-  }
+  // public function setData($data) : void
+  // {
+  //   $this->data = $data;
+  // }
 
-  public function setForegroundColor(int $r, int $g, int $b, int $a = 0) : void
-  {
-    $this->foregroundColor = new Color($r, $g, $b, $a);
-  }
+  // public function setForegroundColor(int $r, int $g, int $b, int $a = 0) : void
+  // {
+  //   $this->foregroundColor = new Color($r, $g, $b, $a);
+  // }
 
-  public function setBackgroundColor(int $r, int $g, int $b, int $a = 0) : void
-  {
-    $this->backgroundColor = new Color($r, $g, $b, $a);
-  }
+  // public function setBackgroundColor(int $r, int $g, int $b, int $a = 0) : void
+  // {
+  //   $this->backgroundColor = new Color($r, $g, $b, $a);
+  // }
 
-  public function setQrcodeSize(int $size, int $margin) : void
-  {
-    $this->size = $size;
-    $this->margin = $margin;
-  }
+  // public function setQrcodeSize(int $size, int $margin) : void
+  // {
+  //   $this->size = $size;
+  //   $this->margin = $margin;
+  // }
 
-  public function generate($data)
+  public function generate($clinicName)
   {
-    $this->setData($data);
+    $clinicName = str_replace(' ','_',$clinicName);
+    $url = 'filafacil.com/'.$clinicName.'/';
 
     $qrcode = new QrCode(
-      data: $this->data,
+      data: $url,
       encoding: new Encoding('UTF-8'),
       errorCorrectionLevel: ErrorCorrectionLevel::Low,
       size: $this->size,
@@ -74,14 +75,17 @@ class QrCodeFactory
     
     // Create generic label
     $label = new Label(
-        text: $this->data,
+        text:  $url,
+        margin: new Margin(10,10,10,10),
         textColor: new Color(255, 255, 255)
     );
 
     $result = $writer->write($qrcode,$logo,$label);
-    $result->saveToFile(__DIR__."/teste.png");
+    $qrCodeName = "qrcode-". $clinicName .".png";
+    $path = __DIR__."/../../resources/qrcodes/".$qrCodeName;
+    $result->saveToFile($path);
 
-    return $result;
+    return $qrCodeName;
 
   }
 

@@ -9,4 +9,8 @@
 <body>
   <header>
     <img src="{{ Vite::asset('resources/assets/logo_nome-day.png') }}" alt="Logo">
+    @php if(!is_null(session()->get('clinicName'))){
+      echo " - <h1>".session()->get('clinicName')."</h1>";
+    }
+    @endphp
   </header>

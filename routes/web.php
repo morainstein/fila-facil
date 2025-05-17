@@ -63,8 +63,9 @@ Route::middleware(Authenticate::class)->group(function(){
 
 Route::controller(PacienteController::class)->group( function (){
     // Rota para Paciente -> Formulário de cadastro
-    Route::get('/paciente/{clinica}/create','create')
-        ->whereNumber('clinica')
+    Route::get('{clinicName}/','create')
+        // ->whereAlpha('clinica')
+        ->whereAlphaNumeric('clinica')
         ->name('paciente.create');
     // Rota para Paciente -> Cadastra o paciente
     Route::post('/paciente/store','store')

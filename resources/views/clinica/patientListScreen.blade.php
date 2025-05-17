@@ -10,7 +10,7 @@
       <span>PRIORIDADE:</span>
     </div>
     @php $i = 1; @endphp
-    @foreach($unservedPacientes as $paciente)
+    @foreach($unservedPatients as $paciente)
     <div class="showed-patients">
       <span>{{ $i++ }}</span>
       <span>{{$paciente->nome}}</span>
@@ -21,7 +21,7 @@
 
   <div class="caixa patients-served">
     <div id="patients-tittle">Atendidos</div>
-    @foreach($servedPacientes as $paciente)
+    @foreach($servedPatients as $paciente)
     <div class="showed-patients">
       <span>{{$paciente->nome}}</span>
     </div>
@@ -29,7 +29,10 @@
   </div>
 
   <div class="qrcode">
-    <img src="{{ Vite::asset('resources/qrcodes/teste.png') }}">
+    @php
+      $clinicName = str_replace(' ','_',session()->get('clinicName'))
+    @endphp
+    <img src='{{ Vite::asset("resources/qrcodes/qrcode-$clinicName.png") }}'>
   </div>
 
 </section>
